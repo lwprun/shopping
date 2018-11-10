@@ -18,6 +18,10 @@ public class CategoryServiceImpl implements ICategoryService {
     @Autowired
     CategoryMapper categoryMapper;
 
+
+    /**
+     * 获取直接子类节点
+     * */
     @Override
     public ServerResponse get_category(Integer categoryId) {
         //step1:非空校验
@@ -37,6 +41,12 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.serverResponseBySuccess(categoryList);
     }
 
+
+
+
+    /**
+     * 增加节点
+     * */
     @Override
     public ServerResponse add_category(Integer parentId, String categoryName) {
 
@@ -58,6 +68,13 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.serverResponseByError("添加失败");
     }
 
+
+
+
+
+     /**
+      * 更改类别节点
+      * */
     @Override
     public ServerResponse set_category_name(Integer categoryId, String categoryName) {
         //step1:参数非空校验
@@ -83,6 +100,11 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.serverResponseByError("修改失败");
     }
 
+
+
+    /**
+     *递归查询子孙节点
+     **/
     @Override
     public ServerResponse get_deep_category(Integer categoryId) {
 

@@ -1,7 +1,10 @@
 package com.neuedu.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.math.BigDecimal;
 import java.util.Date;
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 
 public class Order {
     /**

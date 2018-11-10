@@ -1,6 +1,8 @@
 package com.neuedu.dao;
 
 import com.neuedu.pojo.Cart;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface CartMapper {
@@ -43,4 +45,40 @@ public interface CartMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Cart record);
+
+    //查询购物车信息
+    Cart selectCartByUseridAndProductId(@Param("userId") Integer userId,
+                                        @Param("productId") Integer productId);
+
+    //查询用户的购物信息
+    List<Cart> selectCartByUserid(Integer userId);
+
+    //查询用户的已选中的购物信息
+    List<Cart> selectCartByUseridAndCheck(Integer userId,Integer check);
+
+    //统计用户购物信息是否全选
+    //返回值>0，未全选
+    int isCheckedAll(Integer userId);
+
+
+
+    //删除购物车某些商品
+    int deleteByUserIdAndProductIds(@Param("userId") Integer userId,
+                                    @Param("productIdList") List<Integer> productList);
+
+    //操作购物车商品是否被选中
+    /**
+     * @param check 1:选中，0：未选中
+     * */
+    int selectOrUnselectProduct(@Param("userId") Integer userId,
+                                @Param("productId") Integer productId,
+                                @Param("check") Integer check);
+
+    int get_cart_product_count(Integer userId);
+
+
+    /**
+     *批量删除购物车商品
+     **/
+    int batchDelete(List<Cart> cartList);
 }

@@ -1,7 +1,10 @@
 package com.neuedu.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.Date;
 import java.util.Objects;
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 
 public class Category {
     /**
