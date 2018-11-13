@@ -43,5 +43,11 @@
         </property>
     </bean>
 
-
+    <!--<mvc:interceptors>-->
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/manage/**"/>-->
+            <!--<mvc:exclude-mapping path="/manager/user/login.do"></mvc:exclude-mapping>-->
+            <!--<bean class="com.neuedu.controller.common.intercepter.AuthorityInterceptor"></bean>-->
+        <!--</mvc:interceptor>-->
+    <!--</mvc:interceptors>-->
 </beans>

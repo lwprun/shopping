@@ -50,6 +50,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -68,6 +69,9 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     PayInfoMapper payInfoMapper;
     @Override
+
+
+    //创建订单
     public ServerResponse createOrder(Integer userId, Integer ShippingId) {
 
         //1、参数校验
@@ -158,14 +162,14 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     /**
-     * 获取订单商品信息
+     * 确认订单信息
      *
      * @param userId
      */
     @Override
     public ServerResponse get_order_cart_product(Integer userId) {
         //1、查询购物车
-        List<Cart> cartList = cartMapper.selectCartByUserid(userId);
+        List<Cart> cartList = cartMapper.selectCartByUseridAndCheck(userId,Const.CartCheckedEnum.PRODUCT_CHECKED.getCode());
         //2.list<cart> -->List<orderItem>
         ServerResponse serverResponse = getCartOrderItem(userId, cartList);
         if (serverResponse.isSsuccess()) {
@@ -210,7 +214,7 @@ public class OrderServiceImpl implements IOrderService {
             orderList = orderMapper.findOrderByUserid(userId);
         }
 
-        if (orderList == null || orderList.size() == 0) {
+        if (orderList == null ) {
             return ServerResponse.serverResponseByError("未查询到订单信息");
         }
 
@@ -265,9 +269,14 @@ public class OrderServiceImpl implements IOrderService {
         if (order == null) {
             return ServerResponse.serverResponseByError("订单不存在");
         }
-
+        int result1 = orderMapper.findOrderStatusByOrderNo(orderNo);
+        if(result1<20){
+            return ServerResponse.serverResponseByError("订单未付款，不能发货");
+        }else if (result1>40){
+            return ServerResponse.serverResponseByError("订单已发货，不用再催了");
+        }
         order.setStatus(Const.OrderStatusEnum.ORDER_SEND.getCode());
-        int result = orderMapper.updateByPrimaryKey(order);
+        int result = orderMapper.updateByPrimaryKey2(order);
         if (result > 0) {
             return ServerResponse.serverResponseBySuccess("发货成功");
         }
@@ -303,6 +312,8 @@ public class OrderServiceImpl implements IOrderService {
         orderVO.setPostage(0);
         orderVO.setPayment(order.getPayment());
         orderVO.setPaymentType(order.getPaymentType());
+        String send_time = orderMapper.selectSendTimeByOrderNo(order.getOrderNo());
+        orderVO.setSendTime(send_time);
         Const.PaymentEnum paymentEnum = Const.PaymentEnum.codeOf(order.getPaymentType());
         if (paymentEnum != null) {
             orderVO.setStatusDesc(paymentEnum.getDesc());
@@ -560,7 +571,7 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.serverResponseByError("订单不存在");
 
         }
-        if(order.getStatus()==Const.OrderStatusEnum.ORDER_PAYED.getCode()){
+        if(order.getStatus()>=Const.OrderStatusEnum.ORDER_PAYED.getCode()){
             return ServerResponse.serverResponseBySuccess(true);
         }
         return ServerResponse.serverResponseBySuccess(false);
@@ -933,7 +944,8 @@ public class OrderServiceImpl implements IOrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                .setNotifyUrl("http://c6wekp.natappfree.cc/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl("http://7nz94t.natappfree.cc/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                //.setNotifyUrl("http://47.93.36.231:8080/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
@@ -946,6 +958,7 @@ public class OrderServiceImpl implements IOrderService {
 
                 // 需要修改为运行机器上的路径
                 String filePath = String.format("D://ftpfile/qr-%s.png",
+                //String filePath = String.format("/ftpfile/img/qr-%s.png",
                         response.getOutTradeNo());
                 log.info("filePath:" + filePath);
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);

@@ -54,7 +54,8 @@ public interface CartMapper {
     List<Cart> selectCartByUserid(Integer userId);
 
     //查询用户的已选中的购物信息
-    List<Cart> selectCartByUseridAndCheck(Integer userId,Integer check);
+    List<Cart> selectCartByUseridAndCheck(@Param("userId") Integer userId,
+                                          @Param("check") Integer check);
 
     //统计用户购物信息是否全选
     //返回值>0，未全选

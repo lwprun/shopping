@@ -34,6 +34,11 @@ public interface IAddressService {
     public ServerResponse select(Integer shippingId);
 
     /**
+     * 分页自己具体地址
+     * */
+    public ServerResponse list(Integer userId,Integer pageNum,Integer pageSize);
+
+    /**
      * 分页具体地址
      * */
     public ServerResponse list(Integer pageNum,Integer pageSize);

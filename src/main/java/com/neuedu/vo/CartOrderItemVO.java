@@ -1,7 +1,6 @@
 package com.neuedu.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import javafx.scene.layout.BackgroundImage;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -8,7 +8,6 @@ import com.neuedu.common.Const;
 import com.neuedu.common.ServerResponse;
 import com.neuedu.pojo.UserInfo;
 import com.neuedu.service.IOrderService;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,7 +57,7 @@ public class OrderController {
     }
 
     /**
-     * 获取订单商品信息
+     * 确认订单信息
      */
 
     @RequestMapping(value = "/get_order_cart_product.do")

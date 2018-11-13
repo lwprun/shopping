@@ -81,7 +81,7 @@ public class AddressController {
 
 
     /**
-     * 分页具体地址
+     * 分页显示自己具体地址
      * */
     @RequestMapping(value = "/list.do")
     public ServerResponse list(HttpSession session,
@@ -93,6 +93,26 @@ public class AddressController {
             return ServerResponse.serverResponseByError("需要登录");
         }
 
-        return addressService.list(pageNum,pageSize);
+        return addressService.list(userInfo.getId(),pageNum,pageSize);
+    }
+
+    /**
+     * 分页具体地址
+     * */
+    @RequestMapping(value = "/list_all.do")
+    public ServerResponse list_all(HttpSession session,
+                               @RequestParam(required = false ,defaultValue = "1") Integer pageNum,
+                               @RequestParam(required = false ,defaultValue = "5")Integer pageSize
+    ){
+        UserInfo userInfo=(UserInfo) session.getAttribute(Const.CURRENTUSER);
+        if(userInfo==null){
+            return ServerResponse.serverResponseByError(Const.ReponseCodeEnum.NEED_LOGIN.getCode(),Const.ReponseCodeEnum.NEED_LOGIN.getDesc());
+        }
+        //判断用户权限
+        if(userInfo.getRole()!=Const.RoleEnum.ROLE_ADMIN.getCode()){
+            return ServerResponse.serverResponseByError(Const.ReponseCodeEnum.NO_PRIVILEGE.getCode(),Const.ReponseCodeEnum.NO_PRIVILEGE.getDesc());
+        }
+
+        return addressService.list(null,pageNum,pageSize);
     }
 }

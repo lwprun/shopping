@@ -104,6 +104,29 @@ public class AddressServiceImpl implements IAddressService {
     }
 
     /**
+     * 分页自己具体地址
+     *
+     * @param userId
+     * @param pageNum
+     * @param pageSize
+     */
+    @Override
+    public ServerResponse list(Integer userId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Shipping> shippingList =null;
+        if(userId==null){
+            shippingList= shippingMapper.selectAll();
+        }else {
+             shippingList = shippingMapper.selectByUserId(userId);
+            if(shippingList==null||shippingList.size()==0){
+                return ServerResponse.serverResponseByError("你还没有自己的地址哦，快去添加吧");
+            }
+        }
+        PageInfo pageInfo = new PageInfo(shippingList);
+        return ServerResponse.serverResponseBySuccess(pageInfo);
+    }
+
+    /**
      * 分页具体地址
      *
      * @param pageNum

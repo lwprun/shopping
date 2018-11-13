@@ -3,6 +3,7 @@ package com.neuedu.dao;
 import com.neuedu.pojo.Order;
 import org.apache.ibatis.annotations.Param;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderMapper {
@@ -46,7 +47,9 @@ public interface OrderMapper {
      */
     int updateByPrimaryKey(Order record);
 
+    //发货
 
+    int updateByPrimaryKey2(Order record);
     List<Order> findOrderByUserid(Integer userId);
 
     Order findOrderByOrderNo(Long orderNo);
@@ -54,4 +57,8 @@ public interface OrderMapper {
 
     Order findOrderByOrderNoAndUserId(@Param("userId") Integer userId,
                                       @Param("orderNo") Long orderNo);
+
+    int findOrderStatusByOrderNo(Long orderNo);
+
+    String selectSendTimeByOrderNo(Long orderNo);
 }

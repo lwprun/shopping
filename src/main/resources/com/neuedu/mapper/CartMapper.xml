@@ -81,11 +81,17 @@
     where user_id=#{userId} and product_id=#{productId}
   </select>
 
+  <select id="selectCartByUseridAndCheck" parameterType="map" resultMap="BaseResultMap">
+    select id, user_id, product_id, quantity, checked, create_time, update_time
+    from neuedu_cart
+    where user_id=#{userId} and checked=#{check}
+  </select>
   <select id="selectCartByUserid" parameterType="int" resultMap="BaseResultMap">
     select id, user_id, product_id, quantity, checked, create_time, update_time
     from neuedu_cart
     where user_id=#{userId} and checked=1
   </select>
+
   <select id="isCheckedAll" parameterType="int" resultType="int">
     select  count(1) from neuedu_cart where user_id=#{userId} and checked=0;
   </select>

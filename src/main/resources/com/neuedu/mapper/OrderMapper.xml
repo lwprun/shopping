@@ -65,6 +65,22 @@
       update_time =now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="updateByPrimaryKey2" parameterType="com.neuedu.pojo.Order">
+          update neuedu_order
+    set
+      shipping_id = #{shippingId,jdbcType=INTEGER},
+      payment = #{payment,jdbcType=DECIMAL},
+      payment_type = #{paymentType,jdbcType=INTEGER},
+      postage = #{postage,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      send_time = now(),
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      close_time = #{closeTime,jdbcType=TIMESTAMP},
+
+      update_time =now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
@@ -74,6 +90,16 @@
     payment_time, send_time, end_time, close_time, create_time, update_time
     from neuedu_order
     where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectSendTimeByOrderNo" parameterType="long" resultType="String">
+    select send_time
+    from neuedu_order
+    where order_no = #{orderNo}
+  </select>
+  <select id="findOrderStatusByOrderNo" parameterType="long" resultType="int">
+    select status
+    from neuedu_order
+    where order_no=#{orderNo}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
     <!--

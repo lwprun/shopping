@@ -111,6 +111,12 @@
     from neuedu_shipping
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByUserId" parameterType="int" resultMap="BaseResultMap">
+    select id, user_id, receiver_name, receiver_phone, receiver_mobile, receiver_province,
+    receiver_city, receiver_district, receiver_address, receiver_zip, create_time, update_time
+    from neuedu_shipping
+    where user_id = #{userId}
+  </select>
   <select id="selectAll" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated

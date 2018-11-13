@@ -45,7 +45,7 @@ public class OrderManageController {
 
 
     /**
-     * 订单详情
+     * 按订单号查询
      * */
 
     @RequestMapping(value = "/detail.do")
