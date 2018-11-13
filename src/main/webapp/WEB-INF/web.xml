@@ -10,6 +10,9 @@
         <param-value>classpath:spring.xml</param-value>
     </context-param>
 
+
+
+
     <!--step2；加载监听器-->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -28,4 +31,20 @@
         <servlet-name>dispacherservlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <!--&lt;!&ndash;step4:加载字符拦截器&ndash;&gt;-->
+    <!--<filter>-->
+        <!--<filter-name>setcharacter</filter-name>-->
+        <!--<filter-class>-->
+            <!--org.springframework.web.filter.CharacterEncodingFilter-->
+        <!--</filter-class>-->
+        <!--<init-param>-->
+            <!--<param-name>encoding</param-name>-->
+            <!--<param-value>UTF-8</param-value>-->
+        <!--</init-param>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>setcharacter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
 </web-app>

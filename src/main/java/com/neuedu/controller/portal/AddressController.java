@@ -6,6 +6,7 @@ import com.neuedu.pojo.Shipping;
 import com.neuedu.pojo.UserInfo;
 import com.neuedu.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +26,8 @@ public class AddressController {
      * 删除地址
      * */
 
-    @RequestMapping(value = "/del.do")
-    public ServerResponse del(HttpSession session, Integer shippingId){
+    @RequestMapping(value = "/del/shippingId/{shippingId}")
+    public ServerResponse del(HttpSession session, @PathVariable("shippingId") Integer shippingId){
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
@@ -69,8 +70,8 @@ public class AddressController {
     /**
      * 查看选中的具体地址
      * */
-    @RequestMapping(value = "/select.do")
-    public ServerResponse select(HttpSession session, Integer shippingId){
+    @RequestMapping(value = "/select/shippingId/{shippingId}")
+    public ServerResponse select(HttpSession session, @PathVariable("shippingId") Integer shippingId){
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
@@ -83,10 +84,10 @@ public class AddressController {
     /**
      * 分页显示自己具体地址
      * */
-    @RequestMapping(value = "/list.do")
+    @RequestMapping(value = "/list/{pageNum}/{pageSize}")
     public ServerResponse list(HttpSession session,
-                               @RequestParam(required = false ,defaultValue = "1") Integer pageNum,
-                               @RequestParam(required = false ,defaultValue = "5")Integer pageSize
+                               @RequestParam(required = false ,defaultValue = "1") @PathVariable("pageNum") Integer pageNum,
+                               @RequestParam(required = false ,defaultValue = "5") @PathVariable("pageSize") Integer pageSize
                                ){
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
@@ -99,10 +100,10 @@ public class AddressController {
     /**
      * 分页具体地址
      * */
-    @RequestMapping(value = "/list_all.do")
+    @RequestMapping(value = "/list_all/{pageNum}/{pageSize}")
     public ServerResponse list_all(HttpSession session,
-                               @RequestParam(required = false ,defaultValue = "1") Integer pageNum,
-                               @RequestParam(required = false ,defaultValue = "5")Integer pageSize
+                               @RequestParam(required = false ,defaultValue = "1") @PathVariable("pageNum") Integer pageNum,
+                               @RequestParam(required = false ,defaultValue = "5")  @PathVariable("pageSize")Integer pageSize
     ){
         UserInfo userInfo=(UserInfo) session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
