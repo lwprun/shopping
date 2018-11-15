@@ -157,5 +157,8 @@
 
   </select>
 
+  <select id="findStockByUserId" parameterType="int" resultType="int">
+    select stock from neuedu_product where id=#{productId} for update
+  </select>
 
 </mapper>

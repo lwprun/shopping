@@ -88,6 +88,12 @@
   <update id="updateUsernamePassword" parameterType="map">
     update neuedu_user set password=#{passwordNew},update_time=now() where username=#{username}
   </update>
+
+  <update id="updateUserTokenByUserId" parameterType="map">
+    update neuedu_user
+    set token = #{token}
+    where id =#{userId}
+  </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
@@ -131,4 +137,9 @@
     select count(1) from neuedu_user where username=#{username} and question=#{question} and answer=#{answer}
   </select>
 
+  <select id="findUserInfoByToken" parameterType="string" resultMap="BaseResultMap">
+     select id, username, password, email, phone, question, answer, role, create_time,
+    update_time
+    from neuedu_user  where token=#{token}
+  </select>
 </mapper>

@@ -1,11 +1,10 @@
 package com.neuedu.controller.backend;
 
 
-import com.neuedu.common.Const;
 import com.neuedu.common.ServerResponse;
-import com.neuedu.pojo.UserInfo;
 import com.neuedu.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +25,7 @@ public class OrderManageController {
      * 订单list
      * */
     @RequestMapping(value = "/list.do")
-    public ServerResponse list(HttpSession session,
+    public ServerResponse list(
                                @RequestParam(required = false , defaultValue = "1") Integer pageNum,
                                @RequestParam(required = false ,defaultValue = "10")Integer pageSize){
 
@@ -41,8 +40,8 @@ public class OrderManageController {
      * 按订单号查询
      * */
 
-    @RequestMapping(value = "/detail.do")
-    public ServerResponse detail(HttpSession session,Long orderNo ){
+    @RequestMapping(value = "/detail/orderNo/{orderNo}")
+    public ServerResponse detail(@PathVariable("orderNo") Long orderNo ){
 
 
 
@@ -51,8 +50,8 @@ public class OrderManageController {
 
 
     //订单发货
-    @RequestMapping(value = "/send_goods.do")
-    public ServerResponse send_goods(HttpSession session,Long orderNo ){
+    @RequestMapping(value = "/send_goods/orderNo/{orderNo}")
+    public ServerResponse send_goods(@PathVariable("orderNo") Long orderNo ){
 
         return orderService.send_goods(orderNo);
     }

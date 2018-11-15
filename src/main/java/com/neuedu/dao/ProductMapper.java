@@ -68,4 +68,9 @@ public interface ProductMapper {
                                 @Param("keyword") String keyword);
 
 
+
+    /**
+     *按照商品id查询商品库存
+     * */
+    int findStockByUserId(Integer productId);
 }

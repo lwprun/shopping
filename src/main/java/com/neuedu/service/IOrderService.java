@@ -57,4 +57,9 @@ public interface IOrderService {
      * 查询订单的支付状态
      * */
     ServerResponse query_order_pay_status(Long orderNo);
+
+    /**
+     * 关闭订单
+     * */
+    void closeOrder(String time);
 }

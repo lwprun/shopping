@@ -1,11 +1,10 @@
 package com.neuedu.controller.backend;
 
-import com.neuedu.common.Const;
 import com.neuedu.common.ServerResponse;
 import com.neuedu.pojo.Product;
-import com.neuedu.pojo.UserInfo;
 import com.neuedu.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +21,7 @@ public class ProductManageController {
      * 新增OR更新产品
      * */
     @RequestMapping(value = "/save.do")
-    public ServerResponse saveOrUpdate(HttpSession session,Product product){
+    public ServerResponse saveOrUpdate(Product product){
 
 
         return productService.saveOrUpdate(product);
@@ -31,8 +30,9 @@ public class ProductManageController {
     /**
      * 产品上下架
      * */
-    @RequestMapping(value = "/set_sale_status.do")
-    public ServerResponse set_sale_status(HttpSession session,Integer productId,Integer status){
+    @RequestMapping(value = "/set_sale_status/productId/{productId}/status/{status}")
+    public ServerResponse set_sale_status(@PathVariable("productId") Integer productId,
+                                          @PathVariable("status") Integer status){
 
 
         return productService.set_sale_status(productId,status);
@@ -41,8 +41,8 @@ public class ProductManageController {
     /**
      * 查看商品详情
      * */
-    @RequestMapping(value = "/detail.do")
-    public ServerResponse detail(HttpSession session,Integer productId){
+    @RequestMapping(value = "/detail/productId/{productId}")
+    public ServerResponse detail(@PathVariable("productId") Integer productId){
 
 
         return productService.detail(productId);
@@ -64,7 +64,7 @@ public class ProductManageController {
      * 产品搜索
      * */
     @RequestMapping(value = "/search.do")
-    public ServerResponse search(HttpSession session,
+    public ServerResponse search(
                                  @RequestParam(value = "productId" ,required = false)Integer productId,
                                  @RequestParam(value = "productName" ,required = false)String productName,
                                @RequestParam(value = "pageNum" ,required = false,defaultValue = "1")Integer pageNum,

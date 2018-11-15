@@ -24,6 +24,7 @@ public class UserController {
 @RequestMapping(value = "/login.do")
 public ServerResponse login(HttpSession session, String username, String password){
 
+
                 //serverResponse是一个包含data的对象（data为密码为空其他信息都存在的userInfo对象）
     ServerResponse serverResponse =userService.login(username,password);
     if(serverResponse.isSsuccess()){

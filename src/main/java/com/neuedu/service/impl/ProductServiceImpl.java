@@ -281,56 +281,56 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ServerResponse list_portal(Integer categoryId, String keyword, Integer pageNum, Integer pageSize, String orderBy) {
 
-      //step1:参数校验 categoryId和keyword不能同时为空
+        //step1:参数校验 categoryId和keyword不能同时为空
         if(categoryId==null&&(keyword==null||keyword.equals(""))){
             return ServerResponse.serverResponseByError("参数错误");
         }
         //step2:categoryId
         Set<Integer> integerSet= Sets.newHashSet();
         if(categoryId!=null){
-          Category category=  categoryMapper.selectByPrimaryKey(categoryId);
-          if(category==null&&(keyword==null||keyword.equals(""))){
-              //说明没有商品数据
-              PageHelper.startPage(pageNum,pageSize);
-              List<ProductListVO> productListVOList=Lists.newArrayList();
-              PageInfo pageInfo=new PageInfo(productListVOList);
-              return ServerResponse.serverResponseBySuccess(pageInfo);
-          }
+            Category category=  categoryMapper.selectByPrimaryKey(categoryId);
+            if(category==null&&(keyword==null||keyword.equals(""))){
+                //说明没有商品数据
+                PageHelper.startPage(pageNum,pageSize);
+                List<ProductListVO> productListVOList=Lists.newArrayList();
+                PageInfo pageInfo=new PageInfo(productListVOList);
+                return ServerResponse.serverResponseBySuccess(pageInfo);
+            }
 
-           ServerResponse serverResponse= categoryService.get_deep_category(categoryId);
+            ServerResponse serverResponse= categoryService.get_deep_category(categoryId);
 
-          if(serverResponse.isSsuccess()){
-               integerSet=(Set<Integer>) serverResponse.getData();
-          }
+            if(serverResponse.isSsuccess()){
+                integerSet=(Set<Integer>) serverResponse.getData();
+            }
         }
         //step3: keyword
         if(keyword!=null&&!keyword.equals("")){
             keyword="%"+keyword+"%";
         }
 
-         if(orderBy.equals("")){
-             PageHelper.startPage(pageNum,pageSize);
-         }else{
-         String[] orderByArr=   orderBy.split("_");
-         if(orderByArr.length>1){
-              PageHelper.startPage(pageNum,pageSize,orderByArr[0]+" "+orderByArr[1]);
-         }else{
-             PageHelper.startPage(pageNum,pageSize);
-         }
-         }
-       //step4: List<Product>-->List<ProductListVO>
+        if(orderBy.equals("")){
+            PageHelper.startPage(pageNum,pageSize);
+        }else{
+            String[] orderByArr=   orderBy.split("_");
+            if(orderByArr.length>1){
+                PageHelper.startPage(pageNum,pageSize,orderByArr[0]+" "+orderByArr[1]);
+            }else{
+                PageHelper.startPage(pageNum,pageSize);
+            }
+        }
+        //step4: List<Product>-->List<ProductListVO>
         List<Product> productList=productMapper.searchProduct(integerSet,keyword);
         List<ProductListVO> productListVOList=Lists.newArrayList();
         if(productList!=null&&productList.size()>0){
             for(Product product:productList){
-              ProductListVO productListVO=  assembleProductListVO(product);
+                ProductListVO productListVO=  assembleProductListVO(product);
                 productListVOList.add(productListVO);
             }
         }
 
         //step5:分页
 
-       PageInfo pageInfo=new PageInfo();
+        PageInfo pageInfo=new PageInfo();
         pageInfo.setList(productListVOList);
         //step6:返回
         return ServerResponse.serverResponseBySuccess(pageInfo);

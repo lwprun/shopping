@@ -46,11 +46,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -68,9 +68,10 @@ public class OrderServiceImpl implements IOrderService {
     ShippingMapper shippingMapper;
     @Autowired
     PayInfoMapper payInfoMapper;
+
+
+    @Transactional
     @Override
-
-
     //创建订单
     public ServerResponse createOrder(Integer userId, Integer ShippingId) {
 
@@ -108,13 +109,13 @@ public class OrderServiceImpl implements IOrderService {
         for (OrderItem orderItem : orderItemList) {
             orderItem.setOrderNo(order.getOrderNo());
         }
+        int a =3/0;
         //批量插入
         orderItemMapper.insertBatch(orderItemList);
         //6、扣商品库存
         reduceProductStock(orderItemList);
         //7、购物车中清空已下的商品
         cleanCart(cartList);
-
         //8、返回 OrderVO
         OrderVO orderVO = assembleOrderVO(order, orderItemList, ShippingId);
 
@@ -127,6 +128,7 @@ public class OrderServiceImpl implements IOrderService {
      * @param userId
      * @param orderNo
      */
+    @Transactional
     @Override
     public ServerResponse cancel(Integer userId, Long orderNo) {
 
@@ -259,6 +261,7 @@ public class OrderServiceImpl implements IOrderService {
      *
      * @param orderNo
      */
+    @Transactional
     @Override
     public ServerResponse send_goods(Long orderNo) {
         if (orderNo == null) {
@@ -276,7 +279,8 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.serverResponseByError("订单已发货，不用再催了");
         }
         order.setStatus(Const.OrderStatusEnum.ORDER_SEND.getCode());
-        int result = orderMapper.updateByPrimaryKey2(order);
+        order.setSendTime(new Date());
+        int result = orderMapper.updateByPrimaryKey(order);
         if (result > 0) {
             return ServerResponse.serverResponseBySuccess("发货成功");
         }
@@ -496,6 +500,7 @@ public class OrderServiceImpl implements IOrderService {
      * @param userId
      * @param orderNo
      */
+    @Transactional
     @Override
     public ServerResponse pay(Integer userId, Long orderNo) throws IOException {
         if (orderNo == null) {
@@ -515,6 +520,7 @@ public class OrderServiceImpl implements IOrderService {
      *
      * @param map
      */
+    @Transactional
     @Override
     public ServerResponse alipay_callback(Map<String, String> map) {
 
@@ -575,6 +581,42 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.serverResponseBySuccess(true);
         }
         return ServerResponse.serverResponseBySuccess(false);
+    }
+
+    /**
+     * 根据创建时间关闭订单
+     *
+     * @param time
+     */
+    @Transactional
+    @Override
+    public void closeOrder(String time) {
+        //查询订单创建时间大于time且未付款的订单
+        List<Order> orderList=orderMapper.findOrderByCreateTime(Const.OrderStatusEnum.ORDER_UN_PAY.getCode(),time);
+        if (orderList!=null&&orderList.size()>0){
+            for (Order order:orderList){
+                List<OrderItem> orderItemList= orderItemMapper.findOrderItemByOrderNo(order.getOrderNo());
+                if (orderItemList!=null&&orderItemList.size()>0){
+                    for (OrderItem orderItem:orderItemList){
+                        //这句调用mysql语句使用了悲观锁的行锁
+                        Integer stock= productMapper.findStockByUserId(orderItem.getProductId());
+                        if (stock==null){
+                            continue;
+                        }
+                        //更新商品的库存
+                        stock=stock+orderItem.getQuantity();
+                        Product product=new Product();
+                        product.setId(orderItem.getProductId());
+                        product.setStock(stock);
+                        productMapper.updateProductKeySelective(product);
+                    }
+                }
+                //关闭订单
+                order.setStatus(Const.OrderStatusEnum.ORDER_CANCELED.getCode());
+                order.setCloseTime(new Date());
+                orderMapper.updateByPrimaryKey(order);
+            }
+        }
     }
 
     private static Log log = LogFactory.getLog(Main.class);
@@ -944,8 +986,8 @@ public class OrderServiceImpl implements IOrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                .setNotifyUrl("http://7nz94t.natappfree.cc/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
-                //.setNotifyUrl("http://47.93.36.231:8080/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                //.setNotifyUrl("http://nvk3mv.natappfree.cc/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl("http://47.93.36.231:8080/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
@@ -957,8 +999,8 @@ public class OrderServiceImpl implements IOrderService {
                 dumpResponse(response);
 
                 // 需要修改为运行机器上的路径
-                String filePath = String.format("D://ftpfile/qr-%s.png",
-                //String filePath = String.format("/ftpfile/img/qr-%s.png",
+                //String filePath = String.format("D://ftpfile/qr-%s.png",
+                String filePath = String.format("/ftpfile/img/qr-%s.png",
                         response.getOutTradeNo());
                 log.info("filePath:" + filePath);
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);

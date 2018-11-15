@@ -227,5 +227,28 @@ public class UserServiceImpl implements IUserService {
         return userInfoMapper.selectByPrimaryKey(userId);
 
     }
+
+    /**
+     * 保存用户token信息
+     *
+     * @param userId
+     */
+    @Override
+    public int updateTokenByUserId(Integer userId,String token) {
+        return userInfoMapper.updateUserTokenByUserId(userId,token);
+    }
+
+    /**
+     * 根据token查询用户信息
+     *
+     * @param token
+     */
+    @Override
+    public UserInfo findUserInfoByToken(String token) {
+        if(token==null||token.equals("")){
+            return null;
+        }
+        return userInfoMapper.findUserInfoByToken(token);
+    }
 }
 

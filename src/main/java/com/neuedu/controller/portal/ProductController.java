@@ -3,6 +3,7 @@ package com.neuedu.controller.portal;
 import com.neuedu.common.ServerResponse;
 import com.neuedu.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,7 @@ public class ProductController {
     /**
      * 商品详情
      * */
-    @RequestMapping(value = "/detail/{productId}")
+    @RequestMapping(value = "/detail/productId/{productId}")
     public ServerResponse detail(@PathVariable("productId") Integer productId){
         return  productService.detail_portal(productId);
     }
@@ -34,8 +35,31 @@ public class ProductController {
                                @RequestParam(required = false,defaultValue = "10")Integer pageSize,
                                @RequestParam(required = false,defaultValue = "")String orderBy){
 
+        System.out.println(keyword);
 
         return  productService.list_portal(categoryId,keyword,pageNum,pageSize,orderBy);
+    }
+
+
+    @RequestMapping(value = "/list/categoryId/{categoryId}/{pageNum}/{pageSize}/{orderBy}")
+    public ServerResponse listRestfulByCategoryId(@PathVariable("categoryId") Integer categoryId,
+
+                                                  @PathVariable("pageNum") Integer pageNum,
+                                                  @PathVariable("pageSize") Integer pageSize,
+                                                  @PathVariable("orderBy") String orderBy){
+
+
+        return  productService.list_portal(categoryId,null,pageNum,pageSize,orderBy);
+    }
+    @RequestMapping(value = "/list/keyword/{keyword}/{pageNum}/{pageSize}/{orderBy}")
+    public ServerResponse listRestfulByKeyword(
+            @PathVariable("keyword")     String keyword,
+            @PathVariable("pageNum") Integer pageNum,
+            @PathVariable("pageSize") Integer pageSize,
+            @PathVariable("orderBy") String orderBy){
+
+        System.out.println(keyword);
+        return  productService.list_portal(null,keyword,pageNum,pageSize,orderBy);
     }
 
 }

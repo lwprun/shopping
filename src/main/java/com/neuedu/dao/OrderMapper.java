@@ -49,7 +49,7 @@ public interface OrderMapper {
 
     //发货
 
-    int updateByPrimaryKey2(Order record);
+//    int updateByPrimaryKey2(Order record);
     List<Order> findOrderByUserid(Integer userId);
 
     Order findOrderByOrderNo(Long orderNo);
@@ -61,4 +61,11 @@ public interface OrderMapper {
     int findOrderStatusByOrderNo(Long orderNo);
 
     String selectSendTimeByOrderNo(Long orderNo);
+
+
+    /**
+     * 按照创建时间查询订单
+     * */
+    List<Order> findOrderByCreateTime(@Param("orderStatus") Integer orderStatus,
+                                      @Param("time") String time);
 }

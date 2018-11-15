@@ -3,6 +3,8 @@ package com.neuedu.dao;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.neuedu.pojo.UserInfo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -86,4 +88,14 @@ public interface UserInfoMapper {
      * */
     int  updateUserBySelectActive(UserInfo userInfo);
 
+    /**
+     * 更新用户token信息
+     * */
+    int updateUserTokenByUserId(@Param("userId") Integer userId,
+                                @Param("token") String token);
+
+    /**
+     * 根据token查询用户信息
+     * */
+    UserInfo findUserInfoByToken(String token);
 }

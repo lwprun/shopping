@@ -182,7 +182,8 @@ public class CartServiceImpl implements ICartService {
 
         //判断购物车是否全选
         int count =cartMapper.isCheckedAll(userId);
-        if(count>0){
+        List<Cart> carts=cartMapper.selectCartByUserid(userId);
+        if(count>0||carts==null||carts.size()==0){
             cartVO.setAllchecked(false);
         }else {
             cartVO.setAllchecked(true);
