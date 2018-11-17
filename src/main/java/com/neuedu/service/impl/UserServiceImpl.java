@@ -1,13 +1,13 @@
 package com.neuedu.service.impl;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.neuedu.common.Const;
+import com.neuedu.common.RedisPool;
 import com.neuedu.common.ServerResponse;
 import com.neuedu.dao.UserInfoMapper;
 import com.neuedu.pojo.UserInfo;
 import com.neuedu.service.IUserService;
 import com.neuedu.utils.MD5Utils;
-import com.neuedu.utils.TokenCache;
+import com.neuedu.utils.RedisPoolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -112,7 +112,7 @@ public class UserServiceImpl implements IUserService {
         }
         //step3:服务端生成一个token，并将token返回客户端
         String forgetToken = UUID.randomUUID().toString();
-        TokenCache.set(username,forgetToken);
+        RedisPoolUtils.set(username,forgetToken);
         return ServerResponse.serverResponseBySuccess(forgetToken);
     }
 
@@ -129,7 +129,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.serverResponseByError("token不能为空");
         }
         //step2:Token校验
-        String Token = TokenCache.get(username);
+        String Token = RedisPoolUtils.get(username);
         if(Token==null){
             return ServerResponse.serverResponseByError("token过期");
         }

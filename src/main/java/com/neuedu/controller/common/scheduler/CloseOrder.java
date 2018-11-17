@@ -18,7 +18,7 @@ public class CloseOrder {
 
     @Autowired
     IOrderService orderService;
-    @Scheduled(cron = "0/1 * * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public void closeOrder(){
         Integer hour= Integer.parseInt(PropertiesUtils.readByKey("close.order.time"));
         String date= com.neuedu.utils.DateUtils.dateToStr(DateUtils.addHours(new Date(),-hour));

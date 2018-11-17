@@ -109,7 +109,6 @@ public class OrderServiceImpl implements IOrderService {
         for (OrderItem orderItem : orderItemList) {
             orderItem.setOrderNo(order.getOrderNo());
         }
-        int a =3/0;
         //批量插入
         orderItemMapper.insertBatch(orderItemList);
         //6、扣商品库存
