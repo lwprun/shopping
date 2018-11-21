@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping(value = "/product")
 public class ProductController {
@@ -39,6 +41,15 @@ public class ProductController {
 
         return  productService.list_portal(categoryId,keyword,pageNum,pageSize,orderBy);
     }
+    @RequestMapping(value = "/list_all.do")
+    public ServerResponse list(HttpSession session,
+                               @RequestParam(value = "pageNum" ,required = false,defaultValue = "1")Integer pageNum,
+                               @RequestParam(value = "pageSize" ,required = false,defaultValue = "10")Integer pageSize){
+
+
+        return productService.list(pageNum,pageSize);
+    }
+
 
 
     @RequestMapping(value = "/list/categoryId/{categoryId}/{pageNum}/{pageSize}/{orderBy}")
@@ -61,5 +72,7 @@ public class ProductController {
         System.out.println(keyword);
         return  productService.list_portal(null,keyword,pageNum,pageSize,orderBy);
     }
+
+
 
 }
