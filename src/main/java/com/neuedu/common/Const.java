@@ -1,6 +1,7 @@
 package com.neuedu.common;
 
 public class Const {
+    public static final String JESSESSIONID_COOKIE="jessessionid";
     public static final String CURRENTUSER="current_user";
     public static final String AUTOLOGINCOOKIE = "autologincookie";
     public static final String TRADE_SUCCESS="TRADE_SUCCESS";

@@ -50,9 +50,9 @@ public class OrderManageController {
 
 
     //订单发货
-    @RequestMapping(value = "/send_goods/orderNo/{orderNo}")
-    public ServerResponse send_goods(@PathVariable("orderNo") Long orderNo ){
+    @RequestMapping(value = "/sendGoods/orderNo/{orderNo}")
+    public ServerResponse sendGoods(@PathVariable("orderNo") Long orderNo ){
 
-        return orderService.send_goods(orderNo);
+        return orderService.sendGoods(orderNo);
     }
 }

@@ -23,11 +23,11 @@ public class ProductController {
      * */
     @RequestMapping(value = "/detail/productId/{productId}")
     public ServerResponse detail(@PathVariable("productId") Integer productId){
-        return  productService.detail_portal(productId);
+        return  productService.detailPortal(productId);
     }
 
     /**
-     * 前台-搜索商品并排序
+     * 前台-按类别或关键字搜索商品并排序
      *
      * */
     @RequestMapping(value = "/list.do")
@@ -37,11 +37,10 @@ public class ProductController {
                                @RequestParam(required = false,defaultValue = "10")Integer pageSize,
                                @RequestParam(required = false,defaultValue = "")String orderBy){
 
-        System.out.println(keyword);
 
-        return  productService.list_portal(categoryId,keyword,pageNum,pageSize,orderBy);
+        return  productService.listPortal(categoryId,keyword,pageNum,pageSize,orderBy);
     }
-    @RequestMapping(value = "/list_all.do")
+    @RequestMapping(value = "/listAll.do")
     public ServerResponse list(HttpSession session,
                                @RequestParam(value = "pageNum" ,required = false,defaultValue = "1")Integer pageNum,
                                @RequestParam(value = "pageSize" ,required = false,defaultValue = "10")Integer pageSize){
@@ -60,7 +59,7 @@ public class ProductController {
                                                   @PathVariable("orderBy") String orderBy){
 
 
-        return  productService.list_portal(categoryId,null,pageNum,pageSize,orderBy);
+        return  productService.listPortal(categoryId,null,pageNum,pageSize,orderBy);
     }
     @RequestMapping(value = "/list/keyword/{keyword}/{pageNum}/{pageSize}/{orderBy}")
     public ServerResponse listRestfulByKeyword(
@@ -70,7 +69,7 @@ public class ProductController {
             @PathVariable("orderBy") String orderBy){
 
         System.out.println(keyword);
-        return  productService.list_portal(null,keyword,pageNum,pageSize,orderBy);
+        return  productService.listPortal(null,keyword,pageNum,pageSize,orderBy);
     }
 
 

@@ -16,15 +16,15 @@ public interface IOrderService {
     /**
      * 取消订单
      */
-    ServerResponse cancel(Integer userId,Long orderNo);
+    ServerResponse cancel(Integer userId, Long orderNo);
     /**
      * 获取订单商品信息
      * */
-    ServerResponse get_order_cart_product(Integer userId);
+    ServerResponse getOrderCartProduct(Integer userId);
     /**
      * 订单list
      * */
-    ServerResponse list(Integer userId ,Integer pageNum,Integer pageSize);
+    ServerResponse list(Integer userId, Integer pageNum, Integer pageSize);
 
     /**
      * 订单详情
@@ -36,27 +36,27 @@ public interface IOrderService {
     /**
      * 订单发货
      **/
-    ServerResponse send_goods(Long orderNo);
+    ServerResponse sendGoods(Long orderNo);
 
 
     /***
      *
      * 支付接口
      */
-    ServerResponse pay(Integer userId,Long orderNo) throws IOException;
+    ServerResponse pay(Integer userId, Long orderNo) throws IOException;
 
 
     /**
      * 支付宝回调接口
      * */
 
-    ServerResponse alipay_callback(Map<String,String> map);
+    ServerResponse alipayCallback(Map<String, String> map);
 
 
     /**
      * 查询订单的支付状态
      * */
-    ServerResponse query_order_pay_status(Long orderNo);
+    ServerResponse queryOrderPayStatus(Long orderNo);
 
     /**
      * 关闭订单

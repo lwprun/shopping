@@ -23,6 +23,10 @@ public class CartServiceImpl implements ICartService {
     @Autowired
     ProductMapper productMapper;
 
+
+    /**
+     * 添加到购物车
+     * */
     @Override
     public ServerResponse add(Integer userId,Integer productId, Integer count) {
         //参数非空校验
@@ -58,12 +62,18 @@ public class CartServiceImpl implements ICartService {
         return ServerResponse.serverResponseBySuccess(cartVO);
     }
 
+    /**
+     * 查询购物车
+     * */
     @Override
     public ServerResponse list(Integer userId) {
         CartVO cartVO =getCartVoLimit(userId);
         return ServerResponse.serverResponseBySuccess(cartVO);
     }
 
+    /**
+     * 更新购物车数量
+     * */
     @Override
     public ServerResponse update(Integer userId, Integer productId, Integer count) {
 
@@ -82,8 +92,12 @@ public class CartServiceImpl implements ICartService {
         return ServerResponse.serverResponseBySuccess(getCartVoLimit(userId));
     }
 
+
+    /**
+     * 移除购物车
+     * */
     @Override
-    public ServerResponse delete_product(Integer userId, String productIds) {
+    public ServerResponse deleteProduct(Integer userId, String productIds) {
         //1.参数判断
         if(productIds==null||productIds.equals("")){
             return ServerResponse.serverResponseByError("参数不能为空");
@@ -104,18 +118,24 @@ public class CartServiceImpl implements ICartService {
         return ServerResponse.serverResponseBySuccess(getCartVoLimit(userId));
     }
 
+    /**
+     * 选中购物车某件商品
+     * */
     @Override
-    public ServerResponse select(Integer userId, Integer productId,Integer check) {
+    public ServerResponse checked(Integer userId, Integer productId,Integer check) {
 
         //1.dao 接口
-        cartMapper.selectOrUnselectProduct(userId,productId,check);
+        cartMapper.checked(userId,productId,check);
         //2.返回结果
         return ServerResponse.serverResponseBySuccess(getCartVoLimit(userId));
     }
 
+    /**
+     * 获取购物车中商品的数量
+     * */
     @Override
-    public ServerResponse get_cart_product_count(Integer userId) {
-        int quantity =cartMapper.get_cart_product_count(userId);
+    public ServerResponse getCartProductCount(Integer userId) {
+        int quantity =cartMapper.getCartProductCount(userId);
         return ServerResponse.serverResponseBySuccess(quantity);
     }
 
@@ -135,7 +155,6 @@ public class CartServiceImpl implements ICartService {
             for (Cart cart:cartList){
                 CartProductVo cartProductVo = new CartProductVo();
                 cartProductVo.setId(cart.getId());
-                cartProductVo.setQuantity(cart.getQuantity());
                 cartProductVo.setUserId(userId);
                 cartProductVo.setProductChecked(cart.getChecked());
                 Product product = productMapper.selectByPrimaryKey(cart.getProductId());
@@ -145,7 +164,6 @@ public class CartServiceImpl implements ICartService {
                 cartProductVo.setProductName(product.getName());
                 cartProductVo.setProductPrice(product.getPrice());
                 cartProductVo.setProductStatus(product.getStatus());
-                cartProductVo.setProductStock(product.getStock());
                 cartProductVo.setProductSubtitle(product.getSubtitle());
                 int stock  = product.getStock();
                 int LimitproductCount=0;
@@ -162,8 +180,6 @@ public class CartServiceImpl implements ICartService {
                     cart1.setChecked(cart.getChecked());
                     cart1.setUserId(userId);
                     cartMapper.updateByPrimaryKey(cart1);
-
-
                     cartProductVo.setLimitQuqntity("LIMIT_NUM_FAIL");
                 }
                 cartProductVo.setQuantity(LimitproductCount);
@@ -171,7 +187,6 @@ public class CartServiceImpl implements ICartService {
                 }
                 if(cartProductVo.getProductChecked()==Const.CartCheckedEnum.PRODUCT_CHECKED.getCode()){
                     carttotalprice=BigDecimalUtils.add(carttotalprice.doubleValue(),cartProductVo.getProductTotalPrice().doubleValue());
-
                 }
                 cartProductVoList.add(cartProductVo);
             }

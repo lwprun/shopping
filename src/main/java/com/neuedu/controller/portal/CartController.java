@@ -66,14 +66,14 @@ public class CartController {
     /**
      * 移除购物车中某个商品
      * */
-    @RequestMapping(value = "/delete_product/productIds/{productIds}")
-    public ServerResponse delete_product(HttpSession session, @PathVariable("productIds") String  productIds){
+    @RequestMapping(value = "/deletProduct/productIds/{productIds}")
+    public ServerResponse deletProduct(HttpSession session, @PathVariable("productIds") String  productIds){
 
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
         }
-        return cartService.delete_product(userInfo.getId(),productIds);
+        return cartService.deleteProduct(userInfo.getId(),productIds);
 
     }
 
@@ -82,14 +82,14 @@ public class CartController {
     /**
      * 选中购物车中某个商品
      * */
-    @RequestMapping(value = "/select/productId/{productId}")
-    public ServerResponse select(HttpSession session, @PathVariable("productId") Integer productId){
+    @RequestMapping(value = "/checked/productId/{productId}")
+    public ServerResponse checked(HttpSession session, @PathVariable("productId") Integer productId){
 
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
         }
-        return cartService.select(userInfo.getId(),productId,Const.CartCheckedEnum.PRODUCT_CHECKED.getCode());
+        return cartService.checked(userInfo.getId(),productId,Const.CartCheckedEnum.PRODUCT_CHECKED.getCode());
 
     }
 
@@ -97,14 +97,14 @@ public class CartController {
     /**
      * 取消选中购物车中某个商品
      * */
-    @RequestMapping(value = "/un_select/productId/{productId}")
-    public ServerResponse un_select(HttpSession session,@PathVariable("productId") Integer productId){
+    @RequestMapping(value = "/unChecked/productId/{productId}")
+    public ServerResponse unSelect(HttpSession session,@PathVariable("productId") Integer productId){
 
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
         }
-        return cartService.select(userInfo.getId(),productId,Const.CartCheckedEnum.PRODUCT_UNCHECKED.getCode());
+        return cartService.checked(userInfo.getId(),productId,Const.CartCheckedEnum.PRODUCT_UNCHECKED.getCode());
 
     }
 
@@ -112,14 +112,14 @@ public class CartController {
     /**
      * 全选
      * */
-    @RequestMapping(value = "/select_all.do")
-    public ServerResponse select_all(HttpSession session){
+    @RequestMapping(value = "/checkedAll.do")
+    public ServerResponse CheckedAll(HttpSession session){
 
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
         }
-        return cartService.select(userInfo.getId(),null,Const.CartCheckedEnum.PRODUCT_CHECKED.getCode());
+        return cartService.checked(userInfo.getId(),null,Const.CartCheckedEnum.PRODUCT_CHECKED.getCode());
 
     }
 
@@ -128,14 +128,14 @@ public class CartController {
     /**
      * 取消全选
      * */
-    @RequestMapping(value = "/un_select_all.do")
-    public ServerResponse un_select_all(HttpSession session){
+    @RequestMapping(value = "/unCheckedAll.do")
+    public ServerResponse unCheckedAll(HttpSession session){
 
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
         }
-        return cartService.select(userInfo.getId(),null,Const.CartCheckedEnum.PRODUCT_UNCHECKED.getCode());
+        return cartService.checked(userInfo.getId(),null,Const.CartCheckedEnum.PRODUCT_UNCHECKED.getCode());
 
     }
 
@@ -143,14 +143,14 @@ public class CartController {
     /**
      * 查询购物车中商品数量
      * */
-    @RequestMapping(value = "/get_cart_product_count.do")
-    public ServerResponse get_cart_product_count(HttpSession session){
+    @RequestMapping(value = "/getCartProductCount.do")
+    public ServerResponse getCartProductCount(HttpSession session){
 
         UserInfo userInfo =(UserInfo)  session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
         }
-        return cartService.get_cart_product_count(userInfo.getId());
+        return cartService.getCartProductCount(userInfo.getId());
 
     }
 }

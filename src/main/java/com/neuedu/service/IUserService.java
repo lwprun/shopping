@@ -7,7 +7,7 @@ public interface IUserService {
 /**
      * 登录接口
      * */
-    ServerResponse login(String username,String password);
+    ServerResponse login(String username, String password);
 
 
 
@@ -19,30 +19,30 @@ public interface IUserService {
     /**
      * 根据用户名查询密保问题
      * */
-    ServerResponse  forget_get_question(String username);
+    ServerResponse  forgetGetQuestion(String username);
 
     /**
      * 提交问题答案
      * */
-    ServerResponse forget_check_anwser(String username,String question,String anwser);
+    ServerResponse forgetCheckAnwser(String username, String question, String anwser);
 
     /**
      * 重置密码
      * */
-    ServerResponse forget_reset_anwser(String username,String passwordNew,String forgetToken);
+    ServerResponse forgetResetAnwser(String username, String passwordNew, String forgetToken);
     /**
      * 校验用户名或邮箱是否有效
      * */
-    ServerResponse check_valid(String str,String  type);
+    ServerResponse checkValid(String str, String type);
     /**
      *  登录中状态重置密码
      * */
-    ServerResponse reset_password(String username,String passwordOld,String  passwordNew);
+    ServerResponse resetPassword(String username, String passwordOld, String passwordNew);
 
     /**
      * 登录状态下更新个人信息
      * */
-    ServerResponse update_information(UserInfo user);
+    ServerResponse updateInformation(UserInfo user);
 
     /**
      * 根据userid查询用户信息
@@ -53,7 +53,7 @@ public interface IUserService {
     /**
      * 保存用户token信息
      * */
-    int updateTokenByUserId(Integer userId,String token);
+    int updateTokenByUserId(Integer userId, String token);
 
     /**
      * 根据token查询用户信息

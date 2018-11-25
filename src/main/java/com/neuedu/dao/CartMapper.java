@@ -71,11 +71,11 @@ public interface CartMapper {
     /**
      * @param check 1:选中，0：未选中
      * */
-    int selectOrUnselectProduct(@Param("userId") Integer userId,
+    int checked(@Param("userId") Integer userId,
                                 @Param("productId") Integer productId,
                                 @Param("check") Integer check);
 
-    int get_cart_product_count(Integer userId);
+    int getCartProductCount(Integer userId);
 
 
     /**

@@ -60,14 +60,14 @@ public class OrderController {
      * 确认订单信息
      */
 
-    @RequestMapping(value = "/get_order_cart_product.do")
-    public ServerResponse get_order_cart_product(HttpSession session){
+    @RequestMapping(value = "/getOrderCartProduct.do")
+    public ServerResponse getOrderCartProduct(HttpSession session){
 
         UserInfo userInfo=(UserInfo) session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
         }
-        return orderService.get_order_cart_product(userInfo.getId());
+        return orderService.getOrderCartProduct(userInfo.getId());
     }
 
 
@@ -114,7 +114,7 @@ public class OrderController {
      * 支付宝服务器回调应用服务器接口
      * */
 
-    @RequestMapping(value = "/alipay_callback.do")
+    @RequestMapping(value = "/alipayCallback.do")
     public ServerResponse callback(HttpServletRequest request){
         System.out.println("支付宝服务器回调应用服务器接口");
         Map<String,String> requestparams= Maps.newHashMap();
@@ -136,27 +136,24 @@ public class OrderController {
             if(!result){
                 return ServerResponse.serverResponseByError("非法请求");
             }
-
-
-
         } catch (AlipayApiException e) {
             e.printStackTrace();
         }
         //处理业务逻辑
-        return orderService.alipay_callback(requestparams);
+        return orderService.alipayCallback(requestparams);
 
     }
 
     /**
      * 查询订单的支付状态
      */
-    @RequestMapping(value = "/query_order_pay_status/orderNo/{orderNo}")
-    public ServerResponse query_order_pay_status(HttpSession session,@PathVariable("orderNo") Long orderNo){
+    @RequestMapping(value = "/queryOrderPayStatus/orderNo/{orderNo}")
+    public ServerResponse queryOrderPayStatus(HttpSession session,@PathVariable("orderNo") Long orderNo){
 
         UserInfo userInfo=(UserInfo) session.getAttribute(Const.CURRENTUSER);
         if(userInfo==null){
             return ServerResponse.serverResponseByError("需要登录");
         }
-        return orderService.query_order_pay_status(orderNo);
+        return orderService.queryOrderPayStatus(orderNo);
     }
 }

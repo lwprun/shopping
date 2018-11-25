@@ -72,7 +72,7 @@ public interface UserInfoMapper {
      * 修改用户密码接口
      * */
     int updateUsernamePassword(@Param("username") String username,
-                       @Param("passwordNew") String passwordNew);
+                               @Param("passwordNew") String passwordNew);
 
     /**
      * 校验用户名是否存在

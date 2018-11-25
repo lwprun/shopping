@@ -5,8 +5,7 @@ import com.neuedu.common.Const;
 import com.neuedu.common.ServerResponse;
 import com.neuedu.pojo.UserInfo;
 import com.neuedu.service.IUserService;
-import com.neuedu.utils.IpUtils;
-import com.neuedu.utils.MD5Utils;
+import com.neuedu.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,19 +37,22 @@ public class UserManageController {
             if(userInfo.getRole()==Const.RoleEnum.ROLE_CUSTOMER.getCode()){
                 return ServerResponse.serverResponseByError("无权限登录");
             }
-            session.setAttribute(Const.CURRENTUSER,userInfo);
-            //生成autologintoken
-            String ip = IpUtils.getRemoteAddress(request);
+            String userJson= JsonUtils.obj2String(userInfo);
+            RedisPoolUtils.set(session.getId(),userJson);
+            CookieUtils.writeCookie(response,Const.JESSESSIONID_COOKIE,session.getId());
+            //生成autoLogintoken
+            String ip= IpUtils.getRemoteAddress(request);
             try {
-                String mac =IpUtils.getMACAddress(ip);
-                String token = MD5Utils.getMD5Code(mac);
-                //保存到数据库
+                String mac=IpUtils.getMACAddress(ip);
+                String token= MD5Utils.getMD5Code(mac);
+                //token保存到数据库
                 userService.updateTokenByUserId(userInfo.getId(),token);
-                //token作为cookie响应到客户端
-                Cookie autologincookie = new Cookie(Const.AUTOLOGINCOOKIE,token);
-                autologincookie.setMaxAge(60*60*24*7);
-                autologincookie.setPath("/");
-                response.addCookie(autologincookie);
+                //token作为cookie相应到客户端
+               /* Cookie autoLoginTokenCookie=new Cookie(Const.AUTOLOGINTOKEN,token);
+                autoLoginTokenCookie.setPath("/");
+                autoLoginTokenCookie.setMaxAge(60*60*24*7);//7天
+                response.addCookie(autoLoginTokenCookie);*/
+                CookieUtils.writeCookie(response,Const.AUTOLOGINCOOKIE,token);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (SocketException e) {

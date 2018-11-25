@@ -17,6 +17,10 @@ import java.util.UUID;
 public class UserServiceImpl implements IUserService {
 @Autowired
     UserInfoMapper userInfoMapper;
+
+    /**
+     * 登录
+     * */
     @Override
     public ServerResponse login(String username, String password) {
         //step1:参数的非空校验
@@ -42,6 +46,10 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.serverResponseBySuccess(userInfo);
     }
 
+
+    /**
+     * 注册
+     * */
     @Override
     public ServerResponse register(UserInfo userInfo) {
         //step1:参数的非空校验
@@ -54,15 +62,15 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.serverResponseByError("用户名已存在");
         }
         //step3:检查邮箱
-        int result_email=userInfoMapper.checkEmail(userInfo.getEmail());
-        if(result>0){
+        int resultEmail=userInfoMapper.checkEmail(userInfo.getEmail());
+        if(resultEmail>0){
             return ServerResponse.serverResponseByError("邮箱已存在");
         }
         //step4：注册
         userInfo.setRole(Const.RoleEnum.ROLE_CUSTOMER.getCode());
         userInfo.setPassword(MD5Utils.getMD5Code(userInfo.getPassword()));
-        int result_register = userInfoMapper.insert(userInfo);
-        if(result_register>0){
+        int resultRegister = userInfoMapper.insert(userInfo);
+        if(resultRegister>0){
         return ServerResponse.serverResponseBySuccess("注册成功");
         }else{
         return ServerResponse.serverResponseByError("注册失败");
@@ -70,9 +78,11 @@ public class UserServiceImpl implements IUserService {
 }
 
 
-
+    /**
+     * 获取密保问题
+     * */
     @Override
-    public ServerResponse forget_get_question(String username) {
+    public ServerResponse forgetGetQuestion(String username) {
         //step1:参数检验
         if(username==null||username.equals("")){
             return ServerResponse.serverResponseByError("用户名不能为空");
@@ -85,15 +95,18 @@ public class UserServiceImpl implements IUserService {
         //step3:查询密保问题
 
         String question = userInfoMapper.checkQuestionByUsername(username);
-        System.out.println(question);
         if(question==null||question.equals("")){
             return ServerResponse.serverResponseByError("密保问题为空");
         }
         return ServerResponse.serverResponseBySuccess(question);
     }
 
+
+    /**
+     * 检查密保问题答案是否正确
+     * */
     @Override
-    public ServerResponse forget_check_anwser(String username, String question, String answer) {
+    public ServerResponse forgetCheckAnwser(String username, String question, String answer) {
         //step1:参数校验
         if(username==null||username.equals("")){
             return ServerResponse.serverResponseByError("用户名不能为空");
@@ -116,8 +129,12 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.serverResponseBySuccess(forgetToken);
     }
 
+
+    /**
+     * 根据token重置密码
+     * */
     @Override
-    public ServerResponse forget_reset_anwser(String username, String passwordNew, String forgetToken) {
+    public ServerResponse forgetResetAnwser(String username, String passwordNew, String forgetToken) {
         //step1:参数校验
         if(username==null||username.equals("")){
             return ServerResponse.serverResponseByError("用户名不能为空");
@@ -144,8 +161,13 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.serverResponseByError("密码修改失败");
     }
 
+
+
+    /**
+     * 检查邮箱用户名是否有效
+     * */
     @Override
-    public ServerResponse check_valid(String str, String type) {
+    public ServerResponse checkValid(String str, String type) {
 
         //step1:参数非空校验
         if(str==null||str.equals("")){
@@ -182,8 +204,12 @@ public class UserServiceImpl implements IUserService {
 
     }
 
+
+    /**
+     * 登录状态重置密码
+     * */
     @Override
-    public ServerResponse reset_password(String username,String passwordOld, String passwordNew) {
+    public ServerResponse resetPassword(String username,String passwordOld, String passwordNew) {
         //step1:参数非空校验
         if(passwordOld==null||passwordOld.equals("")){
             return ServerResponse.serverResponseByError("用户名旧密码不能为空");
@@ -205,8 +231,12 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.serverResponseByError("密码修改失败");
     }
 
+
+    /**
+     * 更新用户信息
+     * */
     @Override
-    public ServerResponse update_information(UserInfo user) {
+    public ServerResponse updateInformation(UserInfo user) {
 
         //step1:参数校验
         if(user==null){
@@ -221,6 +251,9 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.serverResponseByError("更新个人信息失败");
     }
 
+    /**
+     * 查看用户信息
+     * */
     @Override
         public UserInfo findUserInfoByUserid(Integer userId) {
 
@@ -230,7 +263,6 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * 保存用户token信息
-     *
      * @param userId
      */
     @Override
@@ -240,7 +272,6 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * 根据token查询用户信息
-     *
      * @param token
      */
     @Override

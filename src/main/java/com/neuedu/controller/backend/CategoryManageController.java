@@ -20,41 +20,40 @@ public class CategoryManageController {
     /**
      * 获取品类子节点(平级)
      * */
-    @RequestMapping(value = "/get_category/categoryId/{categoryId}")
-    public ServerResponse get_category(@PathVariable("categoryId") Integer categoryId){
+    @RequestMapping(value = "/getCategory/categoryId/{categoryId}")
+    public ServerResponse getCategory(@PathVariable("categoryId") Integer categoryId){
 
-        return  categoryService.get_category(categoryId);
+        return  categoryService.getCategory(categoryId);
     }
 
     /**
      * 增加节点
      * */
-    @RequestMapping(value = "/add_category.do")
-    public ServerResponse add_category(@RequestParam(required = false,defaultValue = "0") Integer parentId,
+    @RequestMapping(value = "/addCategory.do")
+    public ServerResponse addCategory(@RequestParam(required = false,defaultValue = "0") Integer parentId,
                                        String categoryName){
 
-        return  categoryService.add_category(parentId,categoryName);
+        return  categoryService.addCategory(parentId,categoryName);
     }
 
     /**
      *  修改节点
      * */
-    @RequestMapping(value = "/set_category_name.do")
-    public ServerResponse set_category_name(HttpSession session,
-                                        Integer categoryId,
-                                       String categoryName){
+    @RequestMapping(value = "/setCategoryName/categoryId/{categoryId}/categoryName/{categoryName}")
+    public ServerResponse setCategoryName(@PathVariable("categoryId")Integer categoryId,
+                                          @PathVariable("categoryName")String categoryName){
 
-        return  categoryService.set_category_name(categoryId,categoryName);
+        return  categoryService.setCategoryName(categoryId,categoryName);
     }
 
 
     /**
      * 获取当前分类id及递归子节点categoryId
      * */
-    @RequestMapping(value = "/get_deep_category/categoryId/{categoryId}")
-    public ServerResponse get_deep_category(@PathVariable("categoryId") Integer categoryId){
+    @RequestMapping(value = "/getDeepCategory/categoryId/{categoryId}")
+    public ServerResponse getDeepCategory(@PathVariable("categoryId") Integer categoryId){
 
-        return  categoryService.get_deep_category(categoryId);
+        return  categoryService.getDeepCategory(categoryId);
     }
 
 

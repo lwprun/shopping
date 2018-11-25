@@ -20,8 +20,8 @@ public class AddressManageController {
     /**
      * 分页具体地址
      * */
-    @RequestMapping(value = "/list_all.do")
-    public ServerResponse list_all(HttpSession session,
+    @RequestMapping(value = "/listAll.do")
+    public ServerResponse listAll(HttpSession session,
                                    @RequestParam(required = false ,defaultValue = "1") Integer pageNum,
                                    @RequestParam(required = false ,defaultValue = "5") Integer pageSize
     ){

@@ -19,7 +19,7 @@ public interface IAddressService {
     /**
      * 删除收获地址
      * */
-    public ServerResponse del(Integer userId,Integer shippingId);
+    public ServerResponse del(Integer userId, Integer shippingId);
 
 
     /**
@@ -36,11 +36,8 @@ public interface IAddressService {
     /**
      * 分页自己具体地址
      * */
-    public ServerResponse list(Integer userId,Integer pageNum,Integer pageSize);
+    public ServerResponse list(Integer userId, Integer pageNum, Integer pageSize);
 
-    /**
-     * 分页具体地址
-     * */
-    public ServerResponse list(Integer pageNum,Integer pageSize);
+
 
 }

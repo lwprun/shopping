@@ -23,21 +23,19 @@ public class CategoryServiceImpl implements ICategoryService {
      * 获取直接子类节点
      * */
     @Override
-    public ServerResponse get_category(Integer categoryId) {
+    public ServerResponse getCategory(Integer categoryId) {
         //step1:非空校验
          if(categoryId==null){
              return ServerResponse.serverResponseByError("参数不能为空");
-
          }
         //step2:根据categoryid查询类别
-           Category category=categoryMapper.selectByPrimaryKey(categoryId);
+         Category category=categoryMapper.selectByPrimaryKey(categoryId);
          if(category==null){
              return ServerResponse.serverResponseByError("查询的类别不存在!");
          }
         //step3: 查询子类别
          List<Category> categoryList= categoryMapper.findChildCategory(categoryId);
-
-        //step4:返回结果
+         //step4:返回结果
         return ServerResponse.serverResponseBySuccess(categoryList);
     }
 
@@ -48,7 +46,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * 增加节点
      * */
     @Override
-    public ServerResponse add_category(Integer parentId, String categoryName) {
+    public ServerResponse addCategory(Integer parentId, String categoryName) {
 
         //step1:参数校验
          if(categoryName==null||categoryName.equals("")){
@@ -76,7 +74,7 @@ public class CategoryServiceImpl implements ICategoryService {
       * 更改类别节点
       * */
     @Override
-    public ServerResponse set_category_name(Integer categoryId, String categoryName) {
+    public ServerResponse setCategoryName(Integer categoryId, String categoryName) {
         //step1:参数非空校验
         if(categoryId==null||categoryId.equals("")){
             return ServerResponse.serverResponseByError("类别id不能为空");
@@ -106,7 +104,7 @@ public class CategoryServiceImpl implements ICategoryService {
      *递归查询子孙节点
      **/
     @Override
-    public ServerResponse get_deep_category(Integer categoryId) {
+    public ServerResponse getDeepCategory(Integer categoryId) {
 
         //step1:参数非空校验
         if(categoryId==null){

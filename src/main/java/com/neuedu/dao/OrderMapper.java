@@ -2,8 +2,6 @@ package com.neuedu.dao;
 
 import com.neuedu.pojo.Order;
 import org.apache.ibatis.annotations.Param;
-
-import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderMapper {

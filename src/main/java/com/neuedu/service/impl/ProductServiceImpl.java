@@ -39,6 +39,11 @@ public class ProductServiceImpl implements IProductService {
     @Autowired
     ICategoryService categoryService;
 
+
+    /**
+     * 添加或更新商品
+     * */
+
     @Override
     public ServerResponse saveOrUpdate(Product product) {
         //step1:参数非空校验
@@ -79,8 +84,12 @@ public class ProductServiceImpl implements IProductService {
 
     }
 
+
+    /**
+     * 商品上下架
+     * */
     @Override
-    public ServerResponse set_sale_status(Integer productId, Integer status) {
+    public ServerResponse setSaleStatus(Integer productId, Integer status) {
         //step1: 参数非空校验
           if(productId==null){
               return ServerResponse.serverResponseByError("商品id参数不能为空");
@@ -104,6 +113,10 @@ public class ProductServiceImpl implements IProductService {
 
     }
 
+
+    /**
+     * 商品详情
+     * */
     @Override
     public ServerResponse detail(Integer productId) {
         //step1:参数校验
@@ -124,34 +137,11 @@ public class ProductServiceImpl implements IProductService {
 
 
 
-    private ProductDetailVO assembleProductDetailVO(Product product){
 
 
-        ProductDetailVO productDetailVO=new ProductDetailVO();
-         productDetailVO.setCategoryId(product.getCategoryId());
-         productDetailVO.setCreateTime(DateUtils.dateToStr(product.getCreateTime()));
-         productDetailVO.setDetail(product.getDetail());
-         productDetailVO.setImageHost(PropertiesUtils.readByKey("imageHost"));
-         productDetailVO.setName(product.getName());
-         productDetailVO.setMainImage(product.getMainImage());
-         productDetailVO.setId(product.getId());
-         productDetailVO.setPrice(product.getPrice());
-         productDetailVO.setStatus(product.getStatus());
-         productDetailVO.setStock(product.getStock());
-         productDetailVO.setSubImages(product.getSubImages());
-         productDetailVO.setSubtitle(product.getSubtitle());
-         productDetailVO.setUpdateTime(DateUtils.dateToStr(product.getUpdateTime()));
-         Category category= categoryMapper.selectByPrimaryKey(product.getCategoryId());
-         if(category!=null){
-             productDetailVO.setParentCategoryId(category.getParentId());
-         }else{
-             //默认根节点
-             productDetailVO.setParentCategoryId(0);
-         }
-        return productDetailVO;
-    }
-
-
+    /**
+     * 商品列表
+     * */
     @Override
     public ServerResponse list(Integer pageNum, Integer pageSize) {
 
@@ -172,26 +162,14 @@ public class ProductServiceImpl implements IProductService {
 
 
 
-    private ProductListVO assembleProductListVO(Product product){
-         ProductListVO productListVO=new ProductListVO();
-          productListVO.setId(product.getId());
-          productListVO.setCategoryId(product.getCategoryId());
-          productListVO.setMainImage(product.getMainImage());
-          productListVO.setName(product.getName());
-          productListVO.setPrice(product.getPrice());
-          productListVO.setStatus(product.getStatus());
-          productListVO.setSubtitle(product.getSubtitle());
 
-         return  productListVO;
-    }
-
+    /**
+     * 商品搜索分页显示
+     * */
     @Override
     public ServerResponse search(Integer productId, String productName,
                                  Integer pageNum, Integer pageSize) {
-
-        // select * from prudct where  productId ? and    productName  like %name%
        PageHelper.startPage(pageNum,pageSize);
-
        if(productName!=null&&!productName.equals("")){
            productName="%"+productName+"%";
        }
@@ -207,20 +185,20 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.serverResponseBySuccess(pageInfo);
     }
 
+    /**
+     * 商品图片上传
+     * */
     @Override
     public ServerResponse upload(MultipartFile file, String path) {
-
         if(file==null){
             return ServerResponse.serverResponseByError();
         }
-
         //step1:获取图片名称
          String  orignalFileName=  file.getOriginalFilename();
         //获取图片的扩展名
         String exName=  orignalFileName.substring(orignalFileName.lastIndexOf(".")); // .jpg
          //为图片生成新的唯一的名字
           String newFileName= UUID.randomUUID().toString()+exName;
-
           File pathFile=new File(path);
           if(!pathFile.exists()){
               pathFile.setWritable(true);
@@ -234,7 +212,6 @@ public class ProductServiceImpl implements IProductService {
             //上传到图片服务器
 
             FtpUtils.uploadFile(Lists.<File>newArrayList(file1));
-            //.....
             Map<String,String> map= Maps.newHashMap();
             map.put("uri",newFileName);
             map.put("url",PropertiesUtils.readByKey("imageHost")+"/"+newFileName);
@@ -254,7 +231,7 @@ public class ProductServiceImpl implements IProductService {
      * 前台接口--商品详细
      * */
     @Override
-    public ServerResponse detail_portal(Integer productId) {
+    public ServerResponse detailPortal(Integer productId) {
 
         //step1:参数校验
         if(productId==null){
@@ -278,8 +255,11 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.serverResponseBySuccess(productDetailVO);
     }
 
+    /**
+     * 按类别或关键字查询商品
+     * */
     @Override
-    public ServerResponse list_portal(Integer categoryId, String keyword, Integer pageNum, Integer pageSize, String orderBy) {
+    public ServerResponse listPortal(Integer categoryId, String keyword, Integer pageNum, Integer pageSize, String orderBy) {
 
         //step1:参数校验 categoryId和keyword不能同时为空
         if(categoryId==null&&(keyword==null||keyword.equals(""))){
@@ -288,7 +268,7 @@ public class ProductServiceImpl implements IProductService {
         //step2:categoryId
         Set<Integer> integerSet= Sets.newHashSet();
         if(categoryId!=null){
-            Category category=  categoryMapper.selectByPrimaryKey(categoryId);
+            Category category=categoryMapper.selectByPrimaryKey(categoryId);
             if(category==null&&(keyword==null||keyword.equals(""))){
                 //说明没有商品数据
                 PageHelper.startPage(pageNum,pageSize);
@@ -297,7 +277,7 @@ public class ProductServiceImpl implements IProductService {
                 return ServerResponse.serverResponseBySuccess(pageInfo);
             }
 
-            ServerResponse serverResponse= categoryService.get_deep_category(categoryId);
+            ServerResponse serverResponse=categoryService.getDeepCategory(categoryId);
 
             if(serverResponse.isSsuccess()){
                 integerSet=(Set<Integer>) serverResponse.getData();
@@ -334,5 +314,46 @@ public class ProductServiceImpl implements IProductService {
         pageInfo.setList(productListVOList);
         //step6:返回
         return ServerResponse.serverResponseBySuccess(pageInfo);
+    }
+
+
+
+
+    private ProductDetailVO assembleProductDetailVO(Product product){
+        ProductDetailVO productDetailVO=new ProductDetailVO();
+        productDetailVO.setCategoryId(product.getCategoryId());
+        productDetailVO.setCreateTime(DateUtils.dateToStr(product.getCreateTime()));
+        productDetailVO.setDetail(product.getDetail());
+        productDetailVO.setImageHost(PropertiesUtils.readByKey("imageHost"));
+        productDetailVO.setName(product.getName());
+        productDetailVO.setMainImage(product.getMainImage());
+        productDetailVO.setId(product.getId());
+        productDetailVO.setPrice(product.getPrice());
+        productDetailVO.setStatus(product.getStatus());
+        productDetailVO.setStock(product.getStock());
+        productDetailVO.setSubImages(product.getSubImages());
+        productDetailVO.setSubtitle(product.getSubtitle());
+        productDetailVO.setUpdateTime(DateUtils.dateToStr(product.getUpdateTime()));
+        Category category= categoryMapper.selectByPrimaryKey(product.getCategoryId());
+        if(category!=null){
+            productDetailVO.setParentCategoryId(category.getParentId());
+        }else{
+            //默认根节点
+            productDetailVO.setParentCategoryId(0);
+        }
+        return productDetailVO;
+    }
+
+    private ProductListVO assembleProductListVO(Product product){
+        ProductListVO productListVO=new ProductListVO();
+        productListVO.setId(product.getId());
+        productListVO.setCategoryId(product.getCategoryId());
+        productListVO.setMainImage(product.getMainImage());
+        productListVO.setName(product.getName());
+        productListVO.setPrice(product.getPrice());
+        productListVO.setStatus(product.getStatus());
+        productListVO.setSubtitle(product.getSubtitle());
+
+        return  productListVO;
     }
 }

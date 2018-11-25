@@ -123,7 +123,6 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 取消订单
-     *
      * @param userId
      * @param orderNo
      */
@@ -164,11 +163,10 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 确认订单信息
-     *
      * @param userId
      */
     @Override
-    public ServerResponse get_order_cart_product(Integer userId) {
+    public ServerResponse getOrderCartProduct(Integer userId) {
         //1、查询购物车
         List<Cart> cartList = cartMapper.selectCartByUseridAndCheck(userId,Const.CartCheckedEnum.PRODUCT_CHECKED.getCode());
         //2.list<cart> -->List<orderItem>
@@ -198,7 +196,6 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 订单list
-     *
      * @param userId
      * @param pageNum
      * @param pageSize
@@ -232,7 +229,6 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 订单详情
-     *
      * @param orderNo
      */
     @Override
@@ -242,8 +238,6 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.serverResponseByError("参数不能为空");
         }
         //2.查询订单
-
-
         Order order = orderMapper.findOrderByOrderNo(orderNo);
         if (order == null) {
             return ServerResponse.serverResponseByError("订单不存在");
@@ -257,12 +251,11 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 订单发货
-     *
      * @param orderNo
      */
     @Transactional
     @Override
-    public ServerResponse send_goods(Long orderNo) {
+    public ServerResponse sendGoods(Long orderNo) {
         if (orderNo == null) {
             return ServerResponse.serverResponseByError("参数不能为空");
         }
@@ -289,13 +282,11 @@ public class OrderServiceImpl implements IOrderService {
 
     private OrderVO assembleOrderVO(Order order, List<OrderItem> orderItemList, Integer shippingId) {
         OrderVO orderVO = new OrderVO();
-
         List<OrderItemVO> orderItemVOList = Lists.newArrayList();
         for (OrderItem orderItem : orderItemList) {
             OrderItemVO orderItemVO = assembleOrderItemVO(orderItem);
             orderItemVOList.add(orderItemVO);
         }
-
         orderVO.setOrderItemVOList(orderItemVOList);
         orderVO.setImageHost(PropertiesUtils.readByKey("imageHost"));
         Shipping shipping = shippingMapper.selectByPrimaryKey(shippingId);
@@ -305,26 +296,21 @@ public class OrderServiceImpl implements IOrderService {
             orderVO.setShippingVO(ShippingVO);
             orderVO.setReceiverName(shipping.getReceiverName());
         }
-
         orderVO.setStatus(order.getStatus());
         Const.OrderStatusEnum orderStatusEnum = Const.OrderStatusEnum.codeOf(order.getStatus());
         if (orderStatusEnum != null) {
             orderVO.setStatusDesc(orderStatusEnum.getDesc());
         }
-
         orderVO.setPostage(0);
         orderVO.setPayment(order.getPayment());
         orderVO.setPaymentType(order.getPaymentType());
-        String send_time = orderMapper.selectSendTimeByOrderNo(order.getOrderNo());
-        orderVO.setSendTime(send_time);
+        String sendTime = orderMapper.selectSendTimeByOrderNo(order.getOrderNo());
+        orderVO.setSendTime(sendTime);
         Const.PaymentEnum paymentEnum = Const.PaymentEnum.codeOf(order.getPaymentType());
         if (paymentEnum != null) {
             orderVO.setStatusDesc(paymentEnum.getDesc());
-
         }
-
         orderVO.setOrderNo(order.getOrderNo());
-
         return orderVO;
     }
 
@@ -434,7 +420,9 @@ public class OrderServiceImpl implements IOrderService {
         return System.currentTimeMillis() + new Random().nextInt(100);
     }
 
-
+    /**
+     * cartList-->CartOrderItemList
+     * */
     private ServerResponse getCartOrderItem(Integer userId, List<Cart> cartList) {
 
         if (cartList == null || cartList.size() == 0) {
@@ -521,7 +509,7 @@ public class OrderServiceImpl implements IOrderService {
      */
     @Transactional
     @Override
-    public ServerResponse alipay_callback(Map<String, String> map) {
+    public ServerResponse alipayCallback(Map<String, String> map) {
 
         //获取orderNo
         Long orderNo =Long.parseLong(map.get("out_trade_no"));
@@ -566,7 +554,7 @@ public class OrderServiceImpl implements IOrderService {
      * @param orderNo
      */
     @Override
-    public ServerResponse query_order_pay_status(Long orderNo) {
+    public ServerResponse queryOrderPayStatus(Long orderNo) {
 
         if (orderNo == null) {
             return ServerResponse.serverResponseByError("订单号不能为空");
@@ -985,8 +973,8 @@ public class OrderServiceImpl implements IOrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                .setNotifyUrl("http://nvk3mv.natappfree.cc/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
-                //.setNotifyUrl("http://47.93.36.231:8080/shopping/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl("http://guwguy.natappfree.cc/shopping/order/alipayCallback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                //.setNotifyUrl("http://47.93.36.231:8080/shopping/order/alipayCallback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);

@@ -17,6 +17,11 @@ import java.util.Map;
 public class AddressServiceImpl implements IAddressService {
     @Autowired
     ShippingMapper shippingMapper;
+
+
+    /**
+     * 新增或更新地址
+     * */
     @Override
     public ServerResponse add(Integer userId, Shipping shipping) {
 
@@ -36,7 +41,6 @@ public class AddressServiceImpl implements IAddressService {
 
     /**
      * 删除收获地址
-     *
      * @param userId
      * @param shippingId
      */
@@ -58,7 +62,6 @@ public class AddressServiceImpl implements IAddressService {
 
     /**
      * 登录状态更新地址
-     *
      * @param shipping
      */
     @Override
@@ -105,7 +108,6 @@ public class AddressServiceImpl implements IAddressService {
 
     /**
      * 分页自己具体地址
-     *
      * @param userId
      * @param pageNum
      * @param pageSize
@@ -126,19 +128,7 @@ public class AddressServiceImpl implements IAddressService {
         return ServerResponse.serverResponseBySuccess(pageInfo);
     }
 
-    /**
-     * 分页具体地址
-     *
-     * @param pageNum
-     * @param pageSize
-     */
-    @Override
-    public ServerResponse list(Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
-        List<Shipping> shippingList = shippingMapper.selectAll();
-        PageInfo pageInfo = new PageInfo(shippingList);
-        return ServerResponse.serverResponseBySuccess(pageInfo);
-    }
+
 
 
 }

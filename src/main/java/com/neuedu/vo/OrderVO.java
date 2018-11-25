@@ -22,7 +22,6 @@ public class OrderVO {
     private String closeTime;
     private String createTime;
     private List<OrderItemVO> orderItemVOList;
-
     private String imageHost;
     private Integer shippingId;
     private String receiverName;

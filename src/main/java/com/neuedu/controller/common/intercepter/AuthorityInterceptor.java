@@ -5,6 +5,9 @@ import com.neuedu.common.Const;
 import com.neuedu.common.ServerResponse;
 import com.neuedu.pojo.UserInfo;
 import com.neuedu.service.IUserService;
+import com.neuedu.utils.CookieUtils;
+import com.neuedu.utils.JsonUtils;
+import com.neuedu.utils.RedisPoolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,24 +24,32 @@ public class AuthorityInterceptor implements HandlerInterceptor {
     IUserService userService;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        httpServletRequest.setCharacterEncoding("UTF-8");
-        HttpSession session = httpServletRequest.getSession();
-        UserInfo userInfo = (UserInfo) session.getAttribute(Const.CURRENTUSER);
-        if(userInfo==null){//从cookie中获得token
-            Cookie[] cookies = httpServletRequest.getCookies();
-            for(Cookie cookie:cookies){
-                String cookieName = cookie.getName();
-                if(cookieName.equals(Const.AUTOLOGINCOOKIE)){
-                    String autologintoken = cookie.getValue();
+        HttpSession session= httpServletRequest.getSession();
+        String jessionid= CookieUtils.readCookie(httpServletRequest,Const.JESSESSIONID_COOKIE);
+        String userInfoStr= RedisPoolUtils.get(jessionid);
+        UserInfo userInfo=null;
+        if(userInfoStr!=null){
+            userInfo = JsonUtils.string2Obj(userInfoStr,UserInfo.class);
+        }
+        if(userInfo==null){//从cookie中获取token信息
+
+            Cookie[] cookies= httpServletRequest.getCookies();
+            if(cookies!=null&&cookies.length>0){
+                for(Cookie cookie:cookies){
+                    String cookieName= cookie.getName();
+                    if(cookieName.equals(Const.AUTOLOGINCOOKIE)){
+                        String autoLoginToken=cookie.getValue();
                         //根据token查询用户信息
-                    userInfo = userService.findUserInfoByToken(autologintoken);
-                    if(userInfo!=null){
-                        session.setAttribute(Const.CURRENTUSER,userInfo);
+                        userInfo=userService.findUserInfoByToken(autoLoginToken);
+                        if(userInfo!=null){
+                            // session.setAttribute(Const.CURRENTUSER,userInfo);
+                            String userstr= JsonUtils.obj2String(userInfo);
+                            RedisPoolUtils.setex(session.getId(),userstr,60*30);
+                        }
+                        break;
                     }
-                     break;
                 }
             }
-
         }
         if (userInfo == null || userInfo.getRole() != Const.RoleEnum.ROLE_ADMIN.getCode()) {
 

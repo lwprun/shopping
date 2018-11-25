@@ -30,12 +30,12 @@ public class ProductManageController {
     /**
      * 产品上下架
      * */
-    @RequestMapping(value = "/set_sale_status/productId/{productId}/status/{status}")
-    public ServerResponse set_sale_status(@PathVariable("productId") Integer productId,
+    @RequestMapping(value = "/setSaleStatus/productId/{productId}/status/{status}")
+    public ServerResponse setSaleStatus(@PathVariable("productId") Integer productId,
                                           @PathVariable("status") Integer status){
 
 
-        return productService.set_sale_status(productId,status);
+        return productService.setSaleStatus(productId,status);
     }
 
     /**
@@ -52,8 +52,7 @@ public class ProductManageController {
      * 查看商品列表
      * */
     @RequestMapping(value = "/list.do")
-    public ServerResponse list(HttpSession session,
-                               @RequestParam(value = "pageNum" ,required = false,defaultValue = "1")Integer pageNum,
+    public ServerResponse list(@RequestParam(value = "pageNum" ,required = false,defaultValue = "1")Integer pageNum,
                                @RequestParam(value = "pageSize" ,required = false,defaultValue = "10")Integer pageSize){
 
 

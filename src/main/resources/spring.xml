@@ -40,7 +40,7 @@
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="configLocation" value="classpath:mybatis-config.xml"></property>
-        <property name="mapperLocations" value="classpath:com/neuedu/mapper/*Mapper.xml" ></property>
+        <property name="mapperLocations" value="classpath:com.neuedu.mapper/*Mapper.xml" ></property>
         <property name="dataSource" ref="dataSource"></property>
 
         <!-- 分页插件 -->
